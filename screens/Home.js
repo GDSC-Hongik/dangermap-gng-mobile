@@ -1,6 +1,7 @@
 import React from 'react';
 import MyPage from './MyPage'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {
     View,
@@ -12,8 +13,6 @@ import {
     TouchableOpacity,
   } from 'react-native';
 
-// 하단 탭 아이콘 수정해야 함
-
 const Tab = createBottomTabNavigator();
 
 function MainScreen() {
@@ -22,27 +21,51 @@ function MainScreen() {
       initialRouteName="Home"
       screenOptions={{
         tabBarActiveTintColor: '#326CF9',
-        tabBarShowLabel: false,
-      }}>
+        tabBarShowLabel: true,
+        tabBarStyle: {	                 
+        	height: 70,
+        },
+        tabBarItemStyle: {
+            marginTop: 10,
+        	height: 50,
+      }}}>
         <Tab.Screen
-        name="Map"
+        name="지도"
         component={MapScreen}
         options={{
-            title: '지도',
-          }}
+            tabBarIcon: ({ focused }) => (
+                <Ionicons
+                    name="map-sharp"
+                    style={{ color: focused ? "#326CF9" : "#404040" }}
+                    size={24}
+                />
+            ),
+        }}
       />
       <Tab.Screen
-        name="Home"
+        name="홈"
         component={HomeScreen}
         options={{
-            title: '홈',
-          }}
+            tabBarIcon: ({ focused }) => (
+                <Ionicons
+                    name="home"
+                    style={{ color: focused ? "#326CF9" : "#404040" }}
+                    size={24}
+                />
+            ),
+        }}
       />
       <Tab.Screen
-        name="Setting"
+        name="설정"
         component={SettingScreen}
         options={{
-          title: '설정',
+            tabBarIcon: ({ focused }) => (
+                <Ionicons
+                    name="settings-sharp"
+                    style={{ color: focused ? "#326CF9" : "#404040" }}
+                    size={24}
+                />
+            ),
         }}></Tab.Screen>
         
     </Tab.Navigator>

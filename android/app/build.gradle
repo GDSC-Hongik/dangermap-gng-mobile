@@ -321,4 +321,7 @@ def isNewArchitectureEnabled() {
     return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
 }
 
+project.ext.vectoricons = [
+   iconFontNames: [ 'Ionicons.ttf']
+]
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
