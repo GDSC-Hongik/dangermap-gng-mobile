@@ -1,10 +1,11 @@
-// import * as Location from 'expo-location';
-// import {StatusBar} from 'expo-status-bar';
+// https://github.com/hakymz/authAppReactNative/blob/main/src/views/screens/LoginScreen.js
+
 import React, {useEffect, useState} from 'react';
 import SignUp from './SignUp.js';
 import SearchPW from './SearchPW';
 
 import {
+  Image,
   View,
   Text,
   StyleSheet,
@@ -37,38 +38,61 @@ export default function Login({navigation}) {
       <View style={styles.header}>
         <Text style={styles.text}>로그인</Text>
       </View>
-      <TextInput
-        placeholder={'이메일 입력'}
-        style={styles.input}
-        autoCapitalize="none"
-        value={email}
-        onChangeText={text => setEmail(text)}></TextInput>
-      <TextInput
-        placeholder={'비밀번호 입력'}
-        style={styles.input}
-        autoCapitalize="none"
-        value={password}
-        onChangeText={text => setPassword(text)}></TextInput>
-      <View style={styles.IdPw}>
+      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <TextInput
+          placeholder={'이메일'}
+          style={styles.input}
+          autoCapitalize="none"
+          value={email}
+          onChangeText={text => setEmail(text)}></TextInput>
+        <TextInput
+          placeholder={'비밀번호'}
+          style={styles.input}
+          autoCapitalize="none"
+          value={password}
+          onChangeText={text => setPassword(text)}></TextInput>
+      </View>
+      <View style={styles.search}>
         <TouchableOpacity onPress={() => navigation.navigate('SearchPW')}>
-          <Text style={styles.searchPW}>비밀번호 찾기</Text>
+          <Text>비밀번호 찾기</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.loginBtn}
-        activeOpacity={0.8}
-        onPress={handleSubmitPress}>
-        <Text>로그인</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.loginBtn} activeOpacity={0.8}>
-        <Text>Google</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.loginBtn}
-        activeOpacity={0.8}
-        onPress={() => navigation.navigate('SignUp')}>
-        <Text>회원가입</Text>
-      </TouchableOpacity>
+      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <TouchableOpacity
+          style={styles.loginBtn}
+          activeOpacity={0.8}
+          onPress={handleSubmitPress}>
+          <Text style={{color: '#ffffff', fontSize: 17}}>로그인</Text>
+        </TouchableOpacity>
+        <View style={styles.sectionLine} />
+        <TouchableOpacity style={styles.google} activeOpacity={0.8}>
+          <Image
+            style={{
+              width: 60,
+              height: 60,
+              borderRadius: 150,
+              overflow: 'hidden',
+              borderWidth: 3,
+            }}
+            source={require('../resource/Images/Icons/Google1.png')}
+          />
+        </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          FlexDirection: 'row',
+        }}>
+        <Text>아직 회원이 아니신가요?</Text>
+        <TouchableOpacity
+          style={styles.register}
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate('SignUp')}>
+          <Text style={{color: '#326CF9'}}>회원가입</Text>
+        </TouchableOpacity>
+      </View>
+      <View></View>
     </ScrollView>
   );
 }
@@ -84,61 +108,61 @@ const styles = StyleSheet.create({
   text: {
     flex: 0.4,
     marginTop: 20,
+    marginBottom: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 25,
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#000000',
   },
   input: {
     flex: 0.05,
-    backgroundColor: '#CEE4F8',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#DADADA',
+    borderRadius: 5,
     marginTop: 20,
-    alignItems: 'center',
     fontSize: 15,
+    width: 380,
+    height: 60,
+  },
+  search: {
+    flex: 0.3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingVertical: 15,
+    paddingHorizontal: 13,
   },
   loginBtn: {
     flex: 0.05,
-    backgroundColor: '#81A0F7',
+    backgroundColor: '#326CF9',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 20,
     paddingHorizontal: 20,
-    borderRadius: 10,
+    borderRadius: 5,
     marginTop: 30,
     marginLeft: 10,
     marginRight: 10,
     fontSize: 15,
+    width: 380,
+    height: 60,
   },
-  searchId: {
-    flex: 0.3,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    marginTop: 20,
-    marginLeft: 180,
-    marginRight: 10,
-  },
-  searchPW: {
-    flex: 0.3,
-    paddingVertical: 15,
-    paddingHorizontal: 13,
-    marginTop: 20,
-    marginLeft: 0,
-    marginRight: 90,
-  },
-  IdPw: {
-    flex: 0.3,
-    flexDirection: 'row',
-  },
-  sign: {
-    flex: 0.5,
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    marginTop: 20,
-    marginLeft: 180,
-    marginRight: 10,
+  sectionLine: {
+    display: 'flex',
     alignItems: 'center',
-    fontSize: 15,
+    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderColor: '#DADADA',
+    width: 380,
+    marginTop: 40,
   },
+  google: {
+    paddingTop: 30,
+    paddingBottom: 40,
+  },
+  register: {flex: 0.05, paddingBottom: 50},
 });

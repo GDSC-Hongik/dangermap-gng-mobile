@@ -1,7 +1,6 @@
 /* 디비에 있는 admin 아이디/비번 이용해 연동 해보기!! */
 // 로그인/로그아웃 상태 확인해야 함 - mypage
 
-
 import React, {useEffect, useState} from 'react';
 import SignUpFinish from './SignUpFinish.js';
 import {
@@ -47,36 +46,38 @@ export default function SignUp({navigation}) {
       <View style={styles.header}>
         <Text style={styles.text}>회원가입</Text>
       </View>
-      <TextInput
-        placeholder={'이메일 입력'}
-        style={styles.input}
-        autoCapitalize="none"
-        value={email}
-        onChangeText={text => setEmail(text)}></TextInput>
-      <TextInput
-        placeholder={'비밀번호 입력'}
-        style={styles.input}
-        autoCapitalize="none"
-        value={password}
-        onChangeText={text => setPassword(text)}></TextInput>
-      <TextInput
-        placeholder={'비밀번호 확인'}
-        style={styles.input}
-        autoCapitalize="none"
-        value={password2}
-        onChangeText={text => setPassword2(text)}></TextInput>
-      <TextInput
-        placeholder={'닉네임'}
-        style={styles.input}
-        autoCapitalize="none"
-        value={nickname}
-        onChangeText={text => setNickname(text)}></TextInput>
-      <TouchableOpacity
-        style={styles.Btn}
-        activeOpacity={0.5}
-        onPress={handleSubmitPress}>
-        <Text>회원가입</Text>
-      </TouchableOpacity>
+      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <TextInput
+          placeholder={'이메일 입력'}
+          style={styles.input}
+          autoCapitalize="none"
+          value={email}
+          onChangeText={text => setEmail(text)}></TextInput>
+        <TextInput
+          placeholder={'비밀번호 입력'}
+          style={styles.input}
+          autoCapitalize="none"
+          value={password}
+          onChangeText={text => setPassword(text)}></TextInput>
+        <TextInput
+          placeholder={'비밀번호 확인'}
+          style={styles.input}
+          autoCapitalize="none"
+          value={password2}
+          onChangeText={text => setPassword2(text)}></TextInput>
+        <TextInput
+          placeholder={'닉네임'}
+          style={styles.input}
+          autoCapitalize="none"
+          value={nickname}
+          onChangeText={text => setNickname(text)}></TextInput>
+        <TouchableOpacity
+          style={styles.registerBtn}
+          activeOpacity={0.5}
+          onPress={handleSubmitPress}>
+          <Text style={{color: '#ffffff', fontSize: 17}}>회원가입</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -90,33 +91,41 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   text: {
-    flex: 0.5,
+    flex: 0.4,
     marginTop: 20,
+    marginBottom: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 25,
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#000000',
   },
   input: {
     flex: 0.05,
-    backgroundColor: '#CEE4F8',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#DADADA',
+    borderRadius: 5,
     marginTop: 20,
-    alignItems: 'center',
     fontSize: 15,
+    width: 380,
+    height: 60,
   },
-  Btn: {
+  registerBtn: {
     flex: 0.05,
-    backgroundColor: '#81A0F7',
+    backgroundColor: '#326CF9',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 20,
     paddingHorizontal: 20,
-    borderRadius: 10,
-    marginTop: 30,
+    borderRadius: 5,
+    marginTop: 50,
+    marginBottom: 80,
     marginLeft: 10,
     marginRight: 10,
     fontSize: 15,
+    width: 380,
+    height: 60,
   },
 });

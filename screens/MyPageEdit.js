@@ -15,63 +15,51 @@ export default function MyPageEdit({navigation}) {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.text}>내 정보 수정 더 만들어야 함</Text>
+      <View style={styles.profile}>
+        <Text>사진넣기</Text>
       </View>
+      <View style={styles.sectionLine} />
       <TouchableOpacity
-        style={styles.Btn}
+        style={styles.section}
         activeOpacity={0.5}
         onPress={() => navigation.navigate('MyNicknameEdit')}>
-        <Text>닉네임 변경</Text>
+        <Text style={styles.font}>닉네임 변경</Text>
       </TouchableOpacity>
-      <TextInput
-        placeholder={'현재 사용자 닉네임'}
-        style={styles.input}
-        autoCapitalize="none"
-        value={nickname}></TextInput>
-      <TouchableOpacity style={styles.Btn} activeOpacity={0.5}>
-        <Text>비밀번호 변경</Text>
+      <View style={styles.sectionLine} />
+      <TouchableOpacity style={styles.section} activeOpacity={0.5}>
+        <Text style={styles.font}>비밀번호 변경</Text>
       </TouchableOpacity>
+      <View style={styles.sectionLine} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: 'white'},
-  header: {
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  profile: {
     flex: 0.3,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 50,
+    marginTop: 100,
+    marginBottom: 100,
   },
-  text: {
-    flex: 0.4,
-    marginTop: 20,
-    alignItems: 'center',
+  section: {
+    flex: 0.1,
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    fontSize: 25,
+    marginBottom: 16,
   },
-  input: {
-    flex: 0.05,
-    backgroundColor: '#CEE4F8',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginTop: 20,
-    alignItems: 'center',
-    fontSize: 15,
+  sectionLine: {
+    borderTopWidth: 0.5,
+    opacity: 0.5,
   },
-  Btn: {
-    flex: 0.05,
-    backgroundColor: '#81A0F7',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginTop: 30,
-    marginLeft: 10,
-    marginRight: 10,
-    fontSize: 15,
+  font: {
+    fontSize: 16,
+    marginLeft: 25,
+    marginTop: 18,
+    fontWeight: 'bold',
   },
 });

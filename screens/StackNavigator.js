@@ -26,48 +26,60 @@ const Stack = createNativeStackNavigator();
 
 function App() {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerTitleStyle: {
+          fontSize: 18,
+          fontWeight: 'bold',
+          alignSelf: 'center',
+        },
+      }}>
       <Stack.Screen
         name="Home"
         component={HomeScreen}
-        options={({title: 'home'}, {headerShown: false})}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        options={{title: '로그인'}}
+        options={{
+          title: '',
+        }}
         activeOpacity={0.8}
       />
       <Stack.Screen
         name="SignUp"
         component={SignUp}
         activeOpacity={0.5}
-        options={{title: '회원가입'}}
+        options={{title: ''}}
       />
       <Stack.Screen
         name="SignUpFinish"
         component={SignUpFinish}
-        options={{title: '회원가입'}}
+        options={{title: ''}}
       />
       <Stack.Screen
         name="SearchPW"
         component={SearchPW}
-        options={{title: '비밀번호 찾기'}}
+        options={{title: ''}}
       />
       <Stack.Screen
         name="SearchPWFinish"
         component={SearchPWFinish}
-        options={{title: '비밀번호 찾기'}}
+        options={{title: ''}}
       />
       <Stack.Screen
         name="MyPage"
         component={MyPage}
-        options={{title: '내정보'}}
+        options={{
+          title: '내정보',
+        }}
       />
       <Stack.Screen
         name="MyPageEdit"
         component={MyPageEdit}
-        options={{title: '내정보 수정'}}
+        options={{title: '회원 정보 수정'}}
       />
       <Stack.Screen
         name="AccountDelete"

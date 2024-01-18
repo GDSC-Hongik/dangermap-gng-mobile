@@ -18,18 +18,22 @@ export default function SearchPW({navigation}) {
       <View style={styles.header}>
         <Text style={styles.text}>비밀번호 찾기</Text>
       </View>
-      <TextInput
-        placeholder={'가입 시 사용한 이메일을 입력하세요.'}
-        style={styles.input}
-        autoCapitalize="none"
-        value={email}
-        onChangeText={text => setEmail(text)}></TextInput>
-      <TouchableOpacity
-        style={styles.Btn}
-        activeOpacity={0.8}
-        onPress={() => navigation.navigate('SearchPWFinish')}>
-        <Text>임시 비밀번호 생성하기</Text>
-      </TouchableOpacity>
+      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <TextInput
+          placeholder={'가입 시 사용한 이메일을 입력하세요.'}
+          style={styles.input}
+          autoCapitalize="none"
+          value={email}
+          onChangeText={text => setEmail(text)}></TextInput>
+        <TouchableOpacity
+          style={styles.Btn}
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate('SearchPWFinish')}>
+          <Text style={{color: '#ffffff', fontSize: 17}}>
+            임시 비밀번호 생성하기
+          </Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -43,33 +47,41 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   text: {
-    flex: 0.5,
+    flex: 0.4,
     marginTop: 20,
+    marginBottom: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 25,
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#000000',
   },
   input: {
     flex: 0.05,
-    backgroundColor: '#CEE4F8',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#DADADA',
+    borderRadius: 5,
     marginTop: 20,
-    alignItems: 'center',
     fontSize: 15,
+    width: 380,
+    height: 60,
   },
   Btn: {
     flex: 0.05,
-    backgroundColor: '#81A0F7',
+    backgroundColor: '#326CF9',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 20,
     paddingHorizontal: 20,
-    borderRadius: 10,
+    borderRadius: 5,
     marginTop: 30,
+    marginBottom: 80,
     marginLeft: 10,
     marginRight: 10,
     fontSize: 15,
+    width: 380,
+    height: 60,
   },
 });
