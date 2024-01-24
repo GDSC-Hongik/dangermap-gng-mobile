@@ -12,6 +12,8 @@ import MyPageEdit from './MyPageEdit';
 import AccountDelete from './AccountDelete';
 import MySafety from './MySafety';
 import MyNicknameEdit from './MyNicknameEdit';
+import MyPasswordCheck from './MyPasswordCheck';
+import MyPasswordEdit from './MyPasswordEdit';
 
 import {
   View,
@@ -95,6 +97,16 @@ function App() {
         name="MyNicknameEdit"
         component={MyNicknameEdit}
         options={{title: '닉네임 수정'}}
+      />
+      <Stack.Screen
+        name="MyPasswordCheck"
+        component={MyPasswordCheck}
+        options={{title: '비밀번호 확인'}}
+      />
+      <Stack.Screen
+        name="MyPasswordEdit"
+        component={MyPasswordEdit}
+        options={{title: '비밀번호 수정'}}
       />
     </Stack.Navigator>
   );

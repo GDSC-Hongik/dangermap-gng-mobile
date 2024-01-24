@@ -26,7 +26,10 @@ export default function MyPageEdit({navigation}) {
         <Text style={styles.font}>닉네임 변경</Text>
       </TouchableOpacity>
       <View style={styles.sectionLine} />
-      <TouchableOpacity style={styles.section} activeOpacity={0.5}>
+      <TouchableOpacity
+        style={styles.section}
+        activeOpacity={0.5}
+        onPress={() => navigation.navigate('MyPasswordCheck')}>
         <Text style={styles.font}>비밀번호 변경</Text>
       </TouchableOpacity>
       <View style={styles.sectionLine} />

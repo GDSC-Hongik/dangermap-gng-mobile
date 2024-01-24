@@ -1,7 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import MyPage from './MyPage';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import Geolocation from '@react-native-community/geolocation';
 
 import {
   View,
@@ -73,7 +76,89 @@ function MainScreen() {
 }
 
 function MapScreen({navigation}) {
-  return <Text>지도지도지도</Text>;
+  const [region, setRegion] = useState({
+    latitude: 51.5079145,
+    longitude: -0.0899163,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  });
+
+  const hongikRegion = {
+    latitude: 37.552635722509,
+    longitude: 126.92436042413,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  };
+
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLogitude] = useState(null);
+
+  // const geoLocation = () => {
+  //   Geolocation.getCurrentPosition(
+  //     position => {
+  //       const latitude = JSON.stringify(position.coords.latitude);
+  //       const longitude = JSON.stringify(position.coords.longitude);
+
+  //       setLatitude(latitude);
+  //       setLogitude(longitude);
+  //     },
+  //     error => {
+  //       console.log(error.code, error.message);
+  //     },
+  //     {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+  //   );
+  // };
+
+
+  
+
+  return (
+    <View style={{flex: 1}}>
+      <MapView
+        style={{flex: 1}}
+        // annotations={markers}
+        // showsUserLocation={true}
+        // showsMyLocationButton={true}
+        // followsUserLocation={true}
+        // showsCompass={true}
+        // scrollEnabled={true}
+        // zoomEnabled={true}
+        // pitchEnabled={true}
+        // rotateEnabled={true}
+        onRegionChangeComplete={region => setRegion(region)}
+        provider={PROVIDER_GOOGLE}
+        minZoomLevel={10}
+        initialRegion={{
+          latitude: 37.552635722509,
+          longitude: 126.92436042413,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}>
+        <Marker coordinate={hongikRegion} />
+        <Marker
+          coordinate={{
+            latitude: 37.556944,
+            longitude: 126.923917,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        />
+      </MapView>
+      <Text style={styles.text}>Current latitude: {region.latitude}</Text>
+      <Text style={styles.text}>Current longitude: {region.longitude}</Text>
+      <View>
+        {/* <Text> latitude: {latitude} </Text>
+        <Text> longitude: {longitude} </Text> */}
+        {/* <TouchableOpacity
+        onPress={() => geoLocation()}
+        style={{backgroundColor: '#89B2E9'}}>
+        <Text style={{color: 'white', textAlign: 'center'}}>
+          Get GeoLocation Button
+        </Text>
+      </TouchableOpacity> */}
+      </View>
+    </View>
+  );
 }
 
 function HomeScreen({navigation}) {
