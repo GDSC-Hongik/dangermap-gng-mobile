@@ -14,6 +14,8 @@ import MySafety from './MySafety';
 import MyNicknameEdit from './MyNicknameEdit';
 import MyPasswordCheck from './MyPasswordCheck';
 import MyPasswordEdit from './MyPasswordEdit';
+import DangerListScreen from './DangerListScreen';
+import DangerDetailScreen from './DangerDetailScreen';
 
 import {
   View,
@@ -107,6 +109,16 @@ function App() {
         name="MyPasswordEdit"
         component={MyPasswordEdit}
         options={{title: '비밀번호 수정'}}
+      />
+      <Stack.Screen
+        name="DangerList"
+        component={DangerListScreen}
+        options={{title: '위험 리스트'}}
+      />
+      <Stack.Screen
+        name="DangerDetailScreen"
+        component={DangerDetailScreen}
+        options={{title: '상세정보'}}
       />
     </Stack.Navigator>
   );

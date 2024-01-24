@@ -109,9 +109,6 @@ function MapScreen({navigation}) {
   //   );
   // };
 
-
-  
-
   return (
     <View style={{flex: 1}}>
       <MapView
@@ -162,7 +159,10 @@ function MapScreen({navigation}) {
 }
 
 function HomeScreen({navigation}) {
-  return <Text>Home 꾸미긲꾸미기</Text>;
+  function navigateToDangerList() {
+    navigation.navigate('DangerList');
+  }
+  return <Button title="위험리스트로 이동" onPress={navigateToDangerList} />;
 }
 
 function SettingScreen({navigation}) {
