@@ -21,6 +21,8 @@ target 'test' do
 
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
+  pod 'RNFBFirestore', :path => '../node_modules/@react-native-firebase/firestore'
+
   target 'testTests' do
     inherit! :complete
     # Pods for testing

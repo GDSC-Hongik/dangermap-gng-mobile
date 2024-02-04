@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage;
 import com.rnmaps.maps.MapsPackage;
 import com.rnmaps.maps.MapsPackage;
 import com.facebook.react.ReactInstanceManager;

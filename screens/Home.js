@@ -162,7 +162,15 @@ function HomeScreen({navigation}) {
   function navigateToDangerList() {
     navigation.navigate('DangerList');
   }
-  return <Button title="위험리스트로 이동" onPress={navigateToDangerList} />;
+  function navigateToTest() {
+    navigation.navigate('Test');
+  }
+  return (
+    <View>
+      <Button title="위험리스트로 이동" onPress={navigateToDangerList} />
+      <Button title="테스트로 이동" onPress={navigateToTest} />
+    </View>
+  );
 }
 
 function SettingScreen({navigation}) {

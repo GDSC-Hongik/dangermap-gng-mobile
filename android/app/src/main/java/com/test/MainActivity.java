@@ -3,8 +3,10 @@ package com.test;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
+import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
 
 public class MainActivity extends ReactActivity {
+
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
