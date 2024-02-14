@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import SearchPWFinish from './SearchPWFinish';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   View,
@@ -12,22 +14,40 @@ import {
 
 export default function SearchPW({navigation}) {
   const [email, setEmail] = useState('');
-  const [errorText, setErrorText] = useState('');
+  const [error, setError] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmitPress = () => {
-    setErrorText('');
-    if (!email) {
-      // setErrorText('이메일을 입력하세요.');
-      alert('이메일을 입력하세요.');
-      return;
+  const resetUserPassword = async () => {
+    try {
+      const user = auth().currentUser; // Access the user property directly
+      // Now you can use the 'user' object as needed
+      const uid = user.uid;
+      // 2. Firestore에서 해당 유저의 정보 가져오기
+      const userDoc = await firestore().collection('user').doc(uid).get();
+      const userData = userDoc.data();
+      // 3. userData를 기반으로 필요한 작업 수행
+      if (userData) {
+        const userEmail = userData.email;
+        setEmail(userEmail);
+      }
+      await auth().sendPasswordResetEmail(email);
+      setSubmitted(true);
+      setError('');
+      navigation.navigate('Login');
+    } catch (error) {
+      if (error.code === 'auth/user-not-found') {
+        setError('User not found');
+      } else {
+        setError('There was a problem with your request');
+      }
     }
-    navigation.navigate('SearchPWFinish');
   };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.text}>비밀번호 찾기</Text>
+        <Text>입력한 이메일로 비밀번호 재설정 주소가 전송됩니다.</Text>
       </View>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
         <TextInput
@@ -39,9 +59,9 @@ export default function SearchPW({navigation}) {
         <TouchableOpacity
           style={styles.Btn}
           activeOpacity={0.8}
-          onPress={handleSubmitPress}>
-          <Text style={{color: '#ffffff', fontSize: 17}}>
-            임시 비밀번호 생성하기
+          onPress={resetUserPassword}>
+          <Text style={{color: '#ffffff', fontSize: 16}}>
+            비밀번호 재설정하기
           </Text>
         </TouchableOpacity>
       </View>

@@ -1,8 +1,7 @@
-/* 디비에 있는 admin 아이디/비번 이용해 연동 해보기!! */
-// 로그인/로그아웃 상태 확인해야 함 - mypage
-
 import React, {useEffect, useState} from 'react';
-import SignUpFinish from './SignUpFinish.js';
+import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 import {
   View,
   Text,
@@ -15,30 +14,31 @@ import {
 export default function SignUp({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [password2, setPassword2] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [nickname, setNickname] = useState('');
-  const [errorText, setErrorText] = useState('');
-  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
 
-  const handleSubmitPress = () => {
-    setErrorText('');
-    if (!email) {
-      alert('이메일을 입력하세요.');
-      return;
+  const SignUpWithEmail = async () => {
+    try {
+      // 1. Firebase Authentication을 사용하여 유저 생성
+      const userCredential = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      );
+      // 2. 생성된 유저의 UID 가져오기
+      const uid = userCredential.user.uid;
+
+      // 3. Firestore에 유저 정보 저장 (닉네임 추가)
+      await firestore().collection('user').doc(uid).set({
+        email: email,
+        nickname: nickname,
+        profile_pic: `https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png`,
+        // 추가적인 필드도 필요하다면 여기에 추가
+      });
+      console.log('User signed up successfully!');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error signing up:', error.message);
     }
-    if (!password) {
-      alert('비밀번호를 입력하세요.');
-      return;
-    }
-    if (password !== password2) {
-      alert('비밀번호를 확인해주세요.');
-      return;
-    }
-    if (!nickname) {
-      alert('닉네임을 입력하세요.');
-      return;
-    }
-    navigation.navigate('SignUpFinish');
   };
 
   return (
@@ -56,15 +56,17 @@ export default function SignUp({navigation}) {
         <TextInput
           placeholder={'비밀번호 입력'}
           style={styles.input}
+          secureTextEntry
           autoCapitalize="none"
           value={password}
           onChangeText={text => setPassword(text)}></TextInput>
         <TextInput
           placeholder={'비밀번호 확인'}
           style={styles.input}
+          secureTextEntry
           autoCapitalize="none"
-          value={password2}
-          onChangeText={text => setPassword2(text)}></TextInput>
+          value={confirmPassword}
+          onChangeText={text => setConfirmPassword(text)}></TextInput>
         <TextInput
           placeholder={'닉네임'}
           style={styles.input}
@@ -74,8 +76,8 @@ export default function SignUp({navigation}) {
         <TouchableOpacity
           style={styles.registerBtn}
           activeOpacity={0.5}
-          onPress={handleSubmitPress}>
-          <Text style={{color: '#ffffff', fontSize: 17}}>회원가입</Text>
+          onPress={SignUpWithEmail}>
+          <Text style={{color: '#ffffff', fontSize: 16}}>회원가입</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

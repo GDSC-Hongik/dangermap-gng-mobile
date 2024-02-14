@@ -1,4 +1,9 @@
 import React, {useEffect, useState} from 'react';
+import {updatePassword} from 'firebase/auth';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import storage from '@react-native-firebase/storage';
 import {
   View,
   Text,
@@ -6,25 +11,25 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 
 export default function SignUp({navigation}) {
-  const [NewPassword, setNewPassword] = useState('');
-  const [NewPasswordCheck, setNewPasswordCheck] = useState('');
-  const [errorText, setErrorText] = useState('');
-  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
 
-  const handleSubmitPress = () => {
-    setErrorText('');
-    if (!NewPassword) {
-      alert('새로운 비밀번호를 입력하세요.');
-      return;
+  const changePassword = async () => {
+    const user = auth().currentUser;
+    try {
+      if (newPassword === newPasswordConfirm) {
+        await user.updatePassword(newPassword);
+        navigation.navigate('MyPage');
+      }
+    } catch (error) {
+      Alert('비밀번호가 다릅니다.');
+      console.log('에러: ', error.message);
     }
-    if (NewPassword !== NewPasswordCheck) {
-      alert('비밀번호를 확인해주세요.');
-      return;
-    }
-    navigation.navigate('MyPage');
   };
 
   return (
@@ -37,19 +42,21 @@ export default function SignUp({navigation}) {
           placeholder={'새로운 비밀번호 입력'}
           style={styles.input}
           autoCapitalize="none"
-          value={NewPassword}
+          secureTextEntry
+          value={newPassword}
           onChangeText={text => setNewPassword(text)}></TextInput>
         <TextInput
           placeholder={'새로운 비밀번호 확인'}
           style={styles.input}
           autoCapitalize="none"
-          value={NewPasswordCheck}
-          onChangeText={text => setNewPasswordCheck(text)}></TextInput>
+          secureTextEntry
+          value={newPasswordConfirm}
+          onChangeText={text => setNewPasswordConfirm(text)}></TextInput>
         <TouchableOpacity
-          style={styles.registerBtn}
+          style={styles.Btn}
           activeOpacity={0.5}
-          onPress={handleSubmitPress}>
-          <Text style={{color: '#ffffff', fontSize: 17}}>비밀번호 확인</Text>
+          onPress={changePassword}>
+          <Text style={{color: '#ffffff', fontSize: 16}}>비밀번호 확인</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -86,7 +93,7 @@ const styles = StyleSheet.create({
     width: 380,
     height: 60,
   },
-  registerBtn: {
+  Btn: {
     flex: 0.05,
     backgroundColor: '#326CF9',
     alignItems: 'center',

@@ -17,7 +17,7 @@ export default function MyPage({navigation}) {
         style={styles.section}
         activeOpacity={0.5}
         onPress={() => navigation.navigate('MyPageEdit')}>
-        <Text style={styles.font}>회원 정보 수정</Text>
+        <Text style={styles.font}>내 정보 수정</Text>
       </TouchableOpacity>
       <View style={styles.sectionLine} />
       <TouchableOpacity
@@ -40,12 +40,6 @@ export default function MyPage({navigation}) {
 
 const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: 'white'},
-  header: {
-    flex: 0.3,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 50,
-  },
   section: {
     flex: 0.1,
     alignItems: 'flex-start',

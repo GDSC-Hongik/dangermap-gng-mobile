@@ -1,10 +1,15 @@
-import React, {useState, useEffect} from 'react';
-import MyPage from './MyPage';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import Geolocation from '@react-native-community/geolocation';
+import React, {useState, useEffect} from 'react'
+import MyPage from './MyPage'
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
+import Geolocation from '@react-native-community/geolocation'
+import {useIsFocused} from '@react-navigation/native'
+
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
 
 import {
   View,
@@ -14,14 +19,16 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
+  Alert,
+} from 'react-native'
+import {reload} from 'firebase/auth'
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator()
 
 function MainScreen() {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="홈"
       screenOptions={{
         tabBarActiveTintColor: '#326CF9',
         tabBarShowLabel: true,
@@ -57,6 +64,7 @@ function MainScreen() {
               size={24}
             />
           ),
+          unmountOnBlur: true,
         }}
       />
       <Tab.Screen
@@ -70,9 +78,10 @@ function MainScreen() {
               size={24}
             />
           ),
+          unmountOnBlur: true,
         }}></Tab.Screen>
     </Tab.Navigator>
-  );
+  )
 }
 
 function MapScreen({navigation}) {
@@ -81,17 +90,17 @@ function MapScreen({navigation}) {
     longitude: -0.0899163,
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
-  });
+  })
 
   const hongikRegion = {
     latitude: 37.552635722509,
     longitude: 126.92436042413,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
-  };
+  }
 
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLogitude] = useState(null);
+  const [latitude, setLatitude] = useState(null)
+  const [longitude, setLogitude] = useState(null)
 
   // const geoLocation = () => {
   //   Geolocation.getCurrentPosition(
@@ -155,36 +164,77 @@ function MapScreen({navigation}) {
       </TouchableOpacity> */}
       </View>
     </View>
-  );
+  )
 }
 
 function HomeScreen({navigation}) {
   function navigateToDangerList() {
-    navigation.navigate('DangerList');
+    navigation.navigate('DangerList')
   }
   function navigateToTest() {
-    navigation.navigate('Test');
+    navigation.navigate('Test')
   }
   return (
     <View>
       <Button title="위험리스트로 이동" onPress={navigateToDangerList} />
-      <Button title="테스트로 이동" onPress={navigateToTest} />
+      <Button title="Test" onPress={() => navigation.navigate('Test')} />
     </View>
-  );
+  )
 }
 
 function SettingScreen({navigation}) {
+  const [logged, setLogged] = useState(false)
+  const [userToken, setUserToken] = useState('')
+
+  const isFocused = useIsFocused()
+
+  const confirmLogged = async () => {
+    try {
+      const user = auth().currentUser
+
+      if (user) {
+        const token = await user.getIdToken()
+        if (token) {
+          setUserToken(token)
+          setLogged(true)
+        }
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
+
+  useEffect(() => {
+    confirmLogged()
+  }, [isFocused])
+
+  const logoutUser = async () => {
+    try {
+      // 로그아웃 시에 저장된 토큰 제거
+      if (userToken) {
+        await AsyncStorage.removeItem(userToken)
+        await auth().signOut()
+        Alert.alert('로그아웃 성공', '성공적으로 로그아웃되었습니다.')
+        setLogged(false)
+        navigation.navigate('Home', {refresh: true})
+        // 추가적으로 필요한 작업 수행}
+      }
+    } catch (error) {
+      console.error('로그아웃 오류:', error.message)
+      Alert.alert('로그아웃 오류', '로그아웃 중 오류가 발생했습니다.')
+    }
+  }
+
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.profile}>
-        <Text>사진넣기</Text>
-      </View>
       <View style={styles.sectionLine} />
-      <TouchableOpacity
-        style={styles.section}
-        onPress={() => navigation.navigate('MyPage')}>
-        <Text style={styles.font}>내정보</Text>
-      </TouchableOpacity>
+      {logged && (
+        <TouchableOpacity
+          style={styles.section}
+          onPress={() => navigation.navigate('MyPage')}>
+          <Text style={styles.font}>내정보</Text>
+        </TouchableOpacity>
+      )}
       <View style={styles.sectionLine} />
       <TouchableOpacity style={styles.section}>
         <Text style={styles.font}>알림받기</Text>
@@ -194,17 +244,23 @@ function SettingScreen({navigation}) {
         <Text style={styles.font}>약관 및 정책</Text>
       </TouchableOpacity>
       <View style={styles.sectionLine} />
-      <TouchableOpacity style={styles.section}>
-        <Text style={styles.font}>로그아웃</Text>
-      </TouchableOpacity>
+      {logged && (
+        <TouchableOpacity style={styles.section} onPress={logoutUser}>
+          <Text style={styles.font}>로그아웃</Text>
+        </TouchableOpacity>
+      )}
+      {!logged && (
+        <TouchableOpacity
+          style={styles.section}
+          onPress={() => {
+            navigation.navigate('Login')
+          }}>
+          <Text style={styles.font}>로그인</Text>
+        </TouchableOpacity>
+      )}
       <View style={styles.sectionLine} />
-      <TouchableOpacity
-        style={styles.section}
-        onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.font}>임시 로그인</Text>
-      </TouchableOpacity>
     </ScrollView>
-  );
+  )
 }
 
 // 처음 어플 키면 홈 화면 보이게끔
@@ -217,13 +273,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-  },
-  profile: {
-    flex: 0.3,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 100,
-    marginBottom: 100,
   },
   section: {
     flex: 0.1,
@@ -241,6 +290,6 @@ const styles = StyleSheet.create({
     marginTop: 18,
     fontWeight: 'bold',
   },
-});
+})
 
-export default MainScreen;
+export default MainScreen

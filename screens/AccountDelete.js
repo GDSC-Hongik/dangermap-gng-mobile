@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-
+import auth from '@react-native-firebase/auth';
 import {
   View,
   Text,
@@ -12,6 +11,19 @@ import {
 } from 'react-native';
 
 export default function AccountDelete({navigation}) {
+  const accountDelete = () => {
+    try {
+      let user = auth().currentUser;
+      user
+        .delete()
+        .then(() => console.log('User deleted'))
+        .catch(error => console.log(error));
+    } catch (error) {
+      console.log(error.message);
+    }
+    navigation.navigate('Home');
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -38,8 +50,8 @@ export default function AccountDelete({navigation}) {
         <TouchableOpacity
           style={styles.Btn}
           activeOpacity={0.8}
-          onPress={() => navigation.navigate('Home')}>
-          <Text style={{color: '#ffffff', fontSize: 17}}>회원탈퇴</Text>
+          onPress={accountDelete}>
+          <Text style={{color: '#ffffff', fontSize: 16}}>회원탈퇴</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

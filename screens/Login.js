@@ -1,8 +1,13 @@
-// https://github.com/hakymz/authAppReactNative/blob/main/src/views/screens/LoginScreen.js
-
-import React, {useEffect, useState} from 'react';
-import SignUp from './SignUp.js';
-import SearchPW from './SearchPW';
+import React, {useEffect, useState} from 'react'
+import SignUp from './SignUp.js'
+import SearchPW from './SearchPW'
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+} from '@react-native-google-signin/google-signin'
 
 import {
   Image,
@@ -14,24 +19,56 @@ import {
   ActivityIndicator,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
+  Alert,
+} from 'react-native'
+
+const saveToken = async token => {
+  try {
+    await AsyncStorage.setItem('userToken', token)
+  } catch (error) {
+    console.error('토큰 저장 오류:', error.message)
+  }
+}
 
 export default function Login({navigation}) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorText, setErrorText] = useState('');
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [logged, setLogged] = useState(false)
 
-  const handleSubmitPress = () => {
-    setErrorText('');
-    if (!email) {
-      alert('이메일을 입력하세요.');
-      return;
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: `46052954576-pq6859lajcmttoajnrkj2sbp00n8s04o.apps.googleusercontent.com`,
+    })
+  }, [])
+
+  const signIn = async () => {
+    try {
+      // 1. Firebase Authentication을 사용하여 로그인
+      await auth().signInWithEmailAndPassword(email, password)
+
+      const userToken = await auth().currentUser.getIdToken()
+
+      if (userToken) {
+        await saveToken(userToken)
+        setLogged(true)
+        Alert.alert('로그인 성공', '성공적으로 로그인되었습니다.')
+        navigation.navigate('Home')
+      }
+    } catch (error) {
+      Alert.alert('로그인 오류', '아이디 또는 비밀번호를 확인해주세요.')
     }
-    if (!password) {
-      alert('비밀번호를 입력하세요.');
-      return;
+  }
+
+  const onPressGoogleBtn = async () => {
+    await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true})
+    const {idToken} = await GoogleSignin.signIn()
+    console.log('idToekn : ', idToken)
+    if (idToken) {
+      setIdToken(idToken)
     }
-  };
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken)
+    const res = await auth().signInWithCredential(googleCredential)
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -48,6 +85,7 @@ export default function Login({navigation}) {
         <TextInput
           placeholder={'비밀번호'}
           style={styles.input}
+          secureTextEntry
           autoCapitalize="none"
           value={password}
           onChangeText={text => setPassword(text)}></TextInput>
@@ -61,11 +99,14 @@ export default function Login({navigation}) {
         <TouchableOpacity
           style={styles.loginBtn}
           activeOpacity={0.8}
-          onPress={handleSubmitPress}>
-          <Text style={{color: '#ffffff', fontSize: 17}}>로그인</Text>
+          onPress={signIn}>
+          <Text style={{color: '#ffffff', fontSize: 16}}>로그인</Text>
         </TouchableOpacity>
         <View style={styles.sectionLine} />
-        <TouchableOpacity style={styles.google} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.google}
+          activeOpacity={0.8}
+          onPress={onPressGoogleBtn}>
           <Image
             style={{
               width: 60,
@@ -94,7 +135,7 @@ export default function Login({navigation}) {
       </View>
       <View></View>
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -165,4 +206,4 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   register: {flex: 0.05, paddingBottom: 50},
-});
+})
