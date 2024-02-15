@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Image,
 } from 'react-native'
-import {getDangerUserData} from './api'
+import {getDangerData} from './api'
 
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
@@ -22,7 +22,7 @@ const DangerListScreen = () => {
 
   const getData = async () => {
     try {
-      const element = await getDangerUserData()
+      const element = await getDangerData()
       setDangerData(element)
     } catch (error) {
       console.log(error)
