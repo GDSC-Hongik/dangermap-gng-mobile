@@ -45,13 +45,6 @@ const DangerListScreen = () => {
             source={{uri: item.content_pics[0]}} // 첫 번째 URL만 사용
           />
         )}
-
-        {item.content_pics.length == 0 && (
-          <Image
-            style={styles.image}
-            // source={{uri: item.content_pics[0]}} // 첫 번째 URL만 사용
-          />
-        )}
         <View style={styles.information}>
           <View>
             <Text style={styles.type}>{item.danger_type}</Text>
