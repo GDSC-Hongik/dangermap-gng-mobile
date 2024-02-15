@@ -11,6 +11,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 
+import DangerListScreen from './DangerListScreen'
+
 import {
   View,
   Text,
@@ -168,16 +170,30 @@ function MapScreen({navigation}) {
 }
 
 function HomeScreen({navigation}) {
-  function navigateToDangerList() {
-    navigation.navigate('DangerList')
+  const handleMapPress = () => {
+    // navigation.navigate('MapScreen')
   }
-  function navigateToTest() {
-    navigation.navigate('Test')
-  }
+
   return (
-    <View>
-      <Button title="위험리스트로 이동" onPress={navigateToDangerList} />
-      <Button title="Test" onPress={() => navigation.navigate('Test')} />
+    <View style={styles.container}>
+      <View style={styles.searchBar}>
+        <Text style={{color: 'black'}}>검색창</Text>
+      </View>
+      <View style={styles.content}>
+        <TouchableOpacity style={styles.map} onPress={() => handleMapPress()}>
+          <Text style={{color: 'black'}}>지도 보기</Text>
+          <MapScreen />
+        </TouchableOpacity>
+        <View style={styles.weather}>
+          <Text style={{color: 'black'}}>오늘의 날씨</Text>
+        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('DangerPost')}>
+          <Text>글쓰기</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.footer}>
+        <DangerListScreen />
+      </View>
     </View>
   )
 }
@@ -289,6 +305,37 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     marginTop: 18,
     fontWeight: 'bold',
+  },
+  footer: {
+    height: '50%',
+    justifyContent: 'center',
+    margin: 10,
+    borderRadius: 5,
+  },
+  searchBar: {
+    flex: 1,
+    height: '10%',
+    margin: 10,
+    borderWidth: 2,
+    borderColor: '#326CF9',
+    borderRadius: 5,
+  },
+  content: {
+    height: '40%',
+  },
+  map: {
+    flex: 1,
+    margin: 10,
+    borderWidth: 2,
+    borderColor: '#326CF9',
+    borderRadius: 5,
+  },
+  weather: {
+    flex: 1,
+    margin: 10,
+    borderWidth: 2,
+    borderColor: '#326CF9',
+    borderRadius: 5,
   },
 })
 

@@ -17,35 +17,12 @@ import storage from '@react-native-firebase/storage'
 
 const DangerListScreen = () => {
   const [dangerData, setDangerData] = useState([])
-  const [nickname, setNickname] = useState()
-  const [email, setEmail] = useState()
 
   const navigation = useNavigation()
 
-  const info = async () => {
-    try {
-      const user = auth().currentUser // Access the user property directly
-
-      // Now you can use the 'user' object as needed
-      const uid = user.uid
-
-      // 2. Firestore에서 해당 유저의 정보 가져오기
-      const userDoc = await firestore().collection('user').doc(uid).get()
-      const userData = userDoc.data()
-
-      // 3. userData를 기반으로 필요한 작업 수행
-      if (userData) {
-        setNickname(userData.nickname)
-        setEmail(userData.email)
-      }
-    } catch (error) {
-      console.error('Error', 'User information not found.', error.message)
-    }
-  }
-
   const getData = async () => {
     try {
-      const element = await getDangerUserData(email)
+      const element = await getDangerUserData()
       setDangerData(element)
     } catch (error) {
       console.log(error)
@@ -53,7 +30,6 @@ const DangerListScreen = () => {
   }
   useEffect(() => {
     getData()
-    info()
   }, [])
 
   const renderItem = (
