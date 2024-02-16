@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import MyPage from './MyPage'
+import {Platform, PermissionsAndroid} from 'react-native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'
@@ -87,53 +87,111 @@ function MainScreen() {
 }
 
 function MapScreen({navigation}) {
-  const [region, setRegion] = useState({
-    latitude: 51.5079145,
-    longitude: -0.0899163,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  })
+  const [location, setLocation] = useState() //useState를 사용하여 location 상태를 관리
 
-  const hongikRegion = {
-    latitude: 37.552635722509,
-    longitude: 126.92436042413,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+  async function requestPermission() {
+    // 사용자의 위치 정보 수집 권한을 요청
+    try {
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: '위치 정보 사용 권한 요청',
+            message: '위치 정보를 사용하여 지도를 표시합니다.',
+            buttonNeutral: '나중에',
+            buttonNegative: '거절',
+            buttonPositive: '수락',
+          },
+        )
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          getCurrentLocation()
+        } else {
+          console.log('위치 정보 사용 권한이 거부되었습니다.')
+        }
+      }
+    } catch (err) {
+      console.warn('여기 에러', err)
+    }
   }
 
-  const [latitude, setLatitude] = useState(null)
-  const [longitude, setLogitude] = useState(null)
+  useEffect(() => {
+    requestPermission()
+  }, [])
 
-  // const geoLocation = () => {
-  //   Geolocation.getCurrentPosition(
-  //     position => {
-  //       const latitude = JSON.stringify(position.coords.latitude);
-  //       const longitude = JSON.stringify(position.coords.longitude);
+  const getCurrentLocation = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        })
+      },
+      error => {
+        console.warn('Error getting current location:', error)
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+    )
+  }
 
-  //       setLatitude(latitude);
-  //       setLogitude(longitude);
-  //     },
-  //     error => {
-  //       console.log(error.code, error.message);
-  //     },
-  //     {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-  //   );
-  // };
+  useEffect(() => {
+    let isMounted = true
 
+    //useEffect를 사용하여 컴포넌트가 마운트될 때 위치 권한을 요청하고, 권한이 허가되면 현재 위치를 가져와 location 상태를 업데이트
+    requestPermission().then(result => {
+      if (isMounted) {
+        console.log({result})
+        if (result === 'granted') {
+          Geolocation.getCurrentPosition(
+            pos => {
+              setLocation(pos.coords)
+            },
+            error => {
+              console.log('오류', error)
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 5000,
+              maximumAge: 3600,
+            },
+          )
+        }
+      }
+    })
+  }, [])
+
+  if (!location) {
+    return (
+      // location이 없으면 "Splash Screen"을 표시
+      <View>
+        <Text>Splash Screen</Text>
+      </View>
+    )
+  }
+
+  return (
+    // 그렇지 않으면 MapView를 통해 현재 위치를 보여줌
+    <>
+      <View>
+        <MapView
+          provider={PROVIDER_GOOGLE}
+          initialRegion={{
+            latitude: location.latitude,
+            longitude: location.longitude,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          }}
+        />
+      </View>
+    </>
+  )
+
+  /*
   return (
     <View style={{flex: 1}}>
       <MapView
         style={{flex: 1}}
-        // annotations={markers}
-        // showsUserLocation={true}
-        // showsMyLocationButton={true}
-        // followsUserLocation={true}
-        // showsCompass={true}
-        // scrollEnabled={true}
-        // zoomEnabled={true}
-        // pitchEnabled={true}
-        // rotateEnabled={true}
-        onRegionChangeComplete={region => setRegion(region)}
         provider={PROVIDER_GOOGLE}
         minZoomLevel={10}
         initialRegion={{
@@ -142,7 +200,6 @@ function MapScreen({navigation}) {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}>
-        <Marker coordinate={hongikRegion} />
         <Marker
           coordinate={{
             latitude: 37.556944,
@@ -152,21 +209,9 @@ function MapScreen({navigation}) {
           }}
         />
       </MapView>
-      <Text style={styles.text}>Current latitude: {region.latitude}</Text>
-      <Text style={styles.text}>Current longitude: {region.longitude}</Text>
-      <View>
-        {/* <Text> latitude: {latitude} </Text>
-        <Text> longitude: {longitude} </Text> */}
-        {/* <TouchableOpacity
-        onPress={() => geoLocation()}
-        style={{backgroundColor: '#89B2E9'}}>
-        <Text style={{color: 'white', textAlign: 'center'}}>
-          Get GeoLocation Button
-        </Text>
-      </TouchableOpacity> */}
-      </View>
     </View>
   )
+  */
 }
 
 function HomeScreen({navigation}) {

@@ -6,8 +6,9 @@ export async function getDangerData() {
 
 export async function getDangerUserData(userEmail) {
   try {
+    let email = userEmail
     const response = await fetch(
-      `http://127.0.0.1:8000/posts?user_email=${userEmail}`,
+      `http://127.0.0.1:8000/posts/email/?user_email=${email}`,
     )
     const body = await response.json()
     return body
@@ -32,7 +33,5 @@ export async function postDangerData(data) {
   } catch (error) {
     console.error('Error posting danger data:', error)
     throw error
-  } finally {
-    console.log('게시글 등록')
   }
 }

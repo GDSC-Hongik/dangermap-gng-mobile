@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   image: {
-    width: '35%',
+    width: '40%',
     backgroundColor: 'black',
   },
   information: {

@@ -51,10 +51,19 @@ const DangerListScreen = () => {
       console.log(error)
     }
   }
+
   useEffect(() => {
-    getData()
-    info()
+    const fetchInfo = async () => {
+      await info()
+    }
+    fetchInfo()
   }, [])
+
+  useEffect(() => {
+    if (email) {
+      getData() // email이 설정된 후에만 getData 함수 실행
+    }
+  }, [email])
 
   const renderItem = (
     {item}, // 화면에 보여질 거
@@ -67,13 +76,6 @@ const DangerListScreen = () => {
           <Image
             style={styles.image}
             source={{uri: item.content_pics[0]}} // 첫 번째 URL만 사용
-          />
-        )}
-
-        {item.content_pics.length == 0 && (
-          <Image
-            style={styles.image}
-            // source={{uri: item.content_pics[0]}} // 첫 번째 URL만 사용
           />
         )}
         <View style={styles.information}>
