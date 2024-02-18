@@ -254,9 +254,28 @@ function MapScreen() {
 }
 
 function HomeScreen({navigation}) {
-  const handleMapPress = () => {
-    // navigation.navigate('MapScreen')
+  const [logged, setLogged] = useState(false)
+  const isFocused = useIsFocused()
+
+  const confirmLogged = async () => {
+    try {
+      const user = auth().currentUser
+
+      if (user) {
+        const token = await user.getIdToken()
+        if (token) {
+          setUserToken(token)
+          setLogged(true)
+        }
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
   }
+
+  useEffect(() => {
+    confirmLogged()
+  }, [isFocused])
 
   return (
     <View style={styles.container}>
@@ -271,9 +290,11 @@ function HomeScreen({navigation}) {
         <View style={styles.weather}>
           <Text style={{color: 'black'}}>오늘의 날씨</Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate('DangerPost')}>
-          <Text>글쓰기</Text>
-        </TouchableOpacity>
+        {logged && (
+          <TouchableOpacity onPress={() => navigation.navigate('DangerPost')}>
+            <Text>글쓰기</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.footer}>
         <DangerListScreen />
