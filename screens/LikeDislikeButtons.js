@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
 
-function LikeDislikeButtons({date, userEmail}) {
+function LikeDislikeButtons({date, userEmail=''}) {
   const API_BASE_URL = 'http://127.0.0.1:8000/posts/'
 
   const [likes, setLikes] = useState(0)
@@ -10,15 +10,15 @@ function LikeDislikeButtons({date, userEmail}) {
   const handleLikeDislike = async isLike => {
     const url = isLike
       ? `${API_BASE_URL}like/?date=${date}`
-      : `${API_BASE_URL}dislike/?date=${date}`
+        : `${API_BASE_URL}dislike/?date=${date}`
+      // ? `${API_BASE_URL}${date}/like`
+      // : `${API_BASE_URL}${date}/dislike`
 
     // 주소를 like / dislike 로 나누지 말고 posts/date~~~/로 구분해서 그 안에 필드를 like, dislike, user_email로 나누는게 나을거 같음
 
-    console.log(`${isLike ? 'Liked' : 'Disliked'} successfully!`)
-    console.log(date)
-    console.log(userEmail)
-    console.log(url)
-    isLike ? setLikes(likes + 1) : setDislikes(dislikes + 1)
+    // console.log(date)
+    // console.log(userEmail)
+    // console.log(url)
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -26,30 +26,23 @@ function LikeDislikeButtons({date, userEmail}) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_email: userEmail,
+          user_email: userEmail
         }),
       })
+      // console.log(response)
       if (response.ok) {
-        console.log('success')
+        console.log(response)
+        const data = await response.json()
+        // console.log(data);
+        console.log(`${isLike ? 'Liked' : 'Disliked'} successfully!`)
+        // isLike ? setLikes(likes + 1) : setDislikes(dislikes + 1)
+        isLike ? setLikes(data.likes) : setDislikes(data.dislikes)
       } else {
         throw new Error('Failed to process like/dislike ')
       }
-      const responseData = await response.json()
-      return responseData
     } catch (error) {
       console.error('Error:', error.message)
     }
-    //   const data = await response.json(); // 서버로부터의 응답 데이터를 JSON으로 파싱
-    //   if (response.ok) {
-    //     console.log(`${isLike ? 'Liked' : 'Disliked'} successfully!`);
-    //     isLike ? setLikes(data.likes) : setDislikes(data.dislikes); // 좋아요/싫어요 수를 서버에서 받아와 업데이트
-    //     return data;
-    //   } else {
-    //     throw new Error(data.error || 'Failed to process like/dislike'); // 서버에서의 오류 메시지를 처리
-    //   }
-    // } catch (error) {
-    //   console.error('Error:', error.message);
-    // }
   }
 
   return (

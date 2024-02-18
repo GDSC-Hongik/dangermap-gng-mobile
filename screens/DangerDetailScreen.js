@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   View,
   Text,
@@ -8,9 +8,35 @@ import {
   TextInput,
 } from 'react-native'
 import LikeDislikeButtons from './LikeDislikeButtons'
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+
 const DangerDetailScreen = ({route}) => {
   const {item} = route.params // 데이터 넘겨 받음
   const [userEmail, setUserEmail] = useState('')
+
+  const info = async () => {
+    try {
+      const user = auth().currentUser // Access the user property directly
+
+      // Now you can use the 'user' object as needed
+      const uid = user.uid
+
+      // 2. Firestore에서 해당 유저의 정보 가져오기
+      const userDoc = await firestore().collection('user').doc(uid).get()
+      const userData = userDoc.data()
+
+      // 3. userData를 기반으로 필요한 작업 수행
+      if (userData) {
+        setUserEmail(userData.email)
+      }
+    } catch (error) {
+      console.error('Error', 'User information not found.', error.message)
+    }
+  }
+  useEffect(() => {
+    info()
+  }, [])
 
   return (
     <ScrollView style={styles.container}>
@@ -23,12 +49,12 @@ const DangerDetailScreen = ({route}) => {
         />
       )}
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <TextInput
+        {/* <TextInput
           placeholder="Enter your email"
           value={userEmail}
           onChangeText={setUserEmail}
           style={{borderWidth: 1, padding: 10, marginBottom: 10}}
-        />
+        /> */}
         <LikeDislikeButtons date={item.date} userEmail={userEmail} />
       </View>
       <Text style={styles.rate}>위험수치 {item.danger_rate}</Text>

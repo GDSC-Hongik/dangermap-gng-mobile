@@ -24,6 +24,7 @@ import {
   Alert,
 } from 'react-native'
 import {reload} from 'firebase/auth'
+import WeatherScreen from './WeatherScreen'
 
 const Tab = createBottomTabNavigator()
 
@@ -288,7 +289,7 @@ function HomeScreen({navigation}) {
           <MapScreen />
         </TouchableOpacity>
         <View style={styles.weather}>
-          <Text style={{color: 'black'}}>오늘의 날씨</Text>
+          <WeatherScreen />
         </View>
         {logged && (
           <TouchableOpacity onPress={() => navigation.navigate('DangerPost')}>
@@ -417,6 +418,7 @@ const styles = StyleSheet.create({
   },
   content: {
     height: '40%',
+    flexDirection: 'row',
   },
   map: {
     flex: 1,
