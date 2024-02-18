@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react'
-import SignUp from './SignUp.js'
-import SearchPW from './SearchPW'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import {useNavigation} from '@react-navigation/native'
 import {
   GoogleSignin,
   GoogleSigninButton,
 } from '@react-native-google-signin/google-signin'
+
+import SignUp from './SignUp'
+import SearchPW from './SearchPW'
 
 import {
   Image,
@@ -115,7 +117,7 @@ export default function Login({navigation}) {
               overflow: 'hidden',
               borderWidth: 3,
             }}
-            source={require('../resource/Images/Icons/Google1.png')}
+            source={require('../../resource/Images/Icons/Google1.png')}
           />
         </TouchableOpacity>
       </View>

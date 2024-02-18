@@ -8,62 +8,34 @@ import {
   StyleSheet,
   Image,
 } from 'react-native'
-import {getDangerUserData} from './api'
+import {getDangerData} from './api'
+
+import {useIsFocused} from '@react-navigation/native'
 
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import storage from '@react-native-firebase/storage'
 
+import DangerDetailScreen from './DangerDetailScreen'
+import {ScrollView} from 'react-native-gesture-handler'
+
 const DangerListScreen = () => {
   const [dangerData, setDangerData] = useState([])
-  const [nickname, setNickname] = useState()
-  const [email, setEmail] = useState()
 
   const navigation = useNavigation()
 
-  const info = async () => {
-    try {
-      const user = auth().currentUser // Access the user property directly
-
-      // Now you can use the 'user' object as needed
-      const uid = user.uid
-
-      // 2. Firestore에서 해당 유저의 정보 가져오기
-      const userDoc = await firestore().collection('user').doc(uid).get()
-      const userData = userDoc.data()
-
-      // 3. userData를 기반으로 필요한 작업 수행
-      if (userData) {
-        setNickname(userData.nickname)
-        setEmail(userData.email)
-      }
-    } catch (error) {
-      console.error('Error', 'User information not found.', error.message)
-    }
-  }
-
   const getData = async () => {
     try {
-      const element = await getDangerUserData(email)
+      const element = await getDangerData()
       setDangerData(element)
     } catch (error) {
       console.log(error)
     }
   }
-
   useEffect(() => {
-    const fetchInfo = async () => {
-      await info()
-    }
-    fetchInfo()
+    getData()
   }, [])
-
-  useEffect(() => {
-    if (email) {
-      getData() // email이 설정된 후에만 getData 함수 실행
-    }
-  }, [email])
 
   const renderItem = (
     {item}, // 화면에 보여질 거
@@ -82,7 +54,7 @@ const DangerListScreen = () => {
           <View>
             <Text style={styles.type}>{item.danger_type}</Text>
           </View>
-          <Text style={styles.date}>{item.date}</Text>
+          <Text style={styles.date}>{item.display_date}</Text>
           <Text style={styles.content} numberOfLines={1}>
             {item.content}
           </Text>
@@ -130,7 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   image: {
-    width: '35%',
+    width: '40%',
     backgroundColor: 'black',
   },
   information: {

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Image,
 } from 'react-native'
-import {getDangerData} from './api'
+import {getDangerUserData} from '../Danger/api'
 
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
@@ -17,20 +17,53 @@ import storage from '@react-native-firebase/storage'
 
 const DangerListScreen = () => {
   const [dangerData, setDangerData] = useState([])
+  const [nickname, setNickname] = useState()
+  const [email, setEmail] = useState()
 
   const navigation = useNavigation()
 
+  const info = async () => {
+    try {
+      const user = auth().currentUser // Access the user property directly
+
+      // Now you can use the 'user' object as needed
+      const uid = user.uid
+
+      // 2. Firestore에서 해당 유저의 정보 가져오기
+      const userDoc = await firestore().collection('user').doc(uid).get()
+      const userData = userDoc.data()
+
+      // 3. userData를 기반으로 필요한 작업 수행
+      if (userData) {
+        setNickname(userData.nickname)
+        setEmail(userData.email)
+      }
+    } catch (error) {
+      console.error('Error', 'User information not found.', error.message)
+    }
+  }
+
   const getData = async () => {
     try {
-      const element = await getDangerData()
+      const element = await getDangerUserData(email)
       setDangerData(element)
     } catch (error) {
       console.log(error)
     }
   }
+
   useEffect(() => {
-    getData()
+    const fetchInfo = async () => {
+      await info()
+    }
+    fetchInfo()
   }, [])
+
+  useEffect(() => {
+    if (email) {
+      getData() // email이 설정된 후에만 getData 함수 실행
+    }
+  }, [email])
 
   const renderItem = (
     {item}, // 화면에 보여질 거
@@ -97,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   image: {
-    width: '40%',
+    width: '35%',
     backgroundColor: 'black',
   },
   information: {

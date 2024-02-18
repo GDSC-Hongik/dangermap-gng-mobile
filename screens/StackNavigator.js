@@ -1,20 +1,27 @@
 import React, {useState, useEffect} from 'react'
 import {NavigationContainer} from '@react-navigation/native'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import LoginScreen from './Login'
-import SignUp from './SignUp'
-import SearchPW from './SearchPW'
-import HomeScreen from './Home'
-import MyPage from './MyPage'
-import MyPageEdit from './MyPageEdit'
-import AccountDelete from './AccountDelete'
-import MySafety from './MySafety'
-import MyPasswordEdit from './MyPasswordEdit'
-import DangerListScreen from './DangerListScreen'
-import DangerDetailScreen from './DangerDetailScreen'
-import Test from './Test'
-import LogoutScreen from './Logout'
-import DangerPost from './DangerPost'
+
+import LoginScreen from './MyPage/Login'
+import LogoutScreen from './MyPage/Logout'
+import SignUp from './MyPage/SignUp'
+import SearchPW from './MyPage/SearchPW'
+import MyPage from './MyPage/MyPage'
+import MyPageEdit from './MyPage/MyPageEdit'
+import AccountDelete from './MyPage/AccountDelete'
+import MySafety from './MyPage/MySafety'
+import MyPasswordEdit from './MyPage/MyPasswordEdit'
+
+import DangerListScreen from './Danger/DangerListScreen'
+import DangerDetailScreen from './Danger/DangerDetailScreen'
+import DangerPost from './Danger/DangerPost'
+import DangerPostLocation from './Danger/DangerPostLocation'
+
+import HomeScreen from './MainScreen/HomeScreen'
+import MapScreen from './MainScreen/MapScreen'
+import SettingScreen from './MainScreen/SettingScreen'
+import WeatherScreen from './MainScreen/WeatherScreen'
+
 import {
   View,
   Text,
@@ -51,6 +58,11 @@ function App() {
         activeOpacity={0.8}
       />
       <Stack.Screen
+        name="Logout"
+        component={LogoutScreen}
+        options={{title: '로그아웃'}}
+      />
+      <Stack.Screen
         name="SignUp"
         component={SignUp}
         activeOpacity={0.5}
@@ -71,7 +83,7 @@ function App() {
       <Stack.Screen
         name="MyPageEdit"
         component={MyPageEdit}
-        options={{title: '회원 정보 수정'}}
+        options={{title: '내정보 수정'}}
       />
       <Stack.Screen
         name="AccountDelete"
@@ -91,7 +103,12 @@ function App() {
       <Stack.Screen
         name="DangerListScreen"
         component={DangerListScreen}
-        options={{title: '위험 리스트'}}
+        options={{title: '위험정보 목록'}}
+      />
+      <Stack.Screen
+        name="DangerPost"
+        component={DangerPost}
+        options={{title: '위험정보 등록'}}
       />
       <Stack.Screen
         name="DangerDetailScreen"
@@ -99,16 +116,10 @@ function App() {
         options={{title: '상세정보'}}
       />
       <Stack.Screen
-        name="Logout"
-        component={LogoutScreen}
-        options={{title: '로그아웃'}}
+        name="DangerPostLocation"
+        component={DangerPostLocation}
+        options={{title: ''}}
       />
-      <Stack.Screen
-        name="DangerPost"
-        component={DangerPost}
-        options={{title: '위험정보 등록'}}
-      />
-      <Stack.Screen name="Test" component={Test} options={{title: '테스트'}} />
     </Stack.Navigator>
   )
 }

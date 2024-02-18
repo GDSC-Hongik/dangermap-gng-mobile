@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import auth from '@react-native-firebase/auth';
-import storage from '@react-native-firebase/storage';
-import firestore from '@react-native-firebase/firestore';
+import React, {useEffect, useState} from 'react'
+import auth from '@react-native-firebase/auth'
+import storage from '@react-native-firebase/storage'
+import firestore from '@react-native-firebase/firestore'
+import {useNavigation} from '@react-navigation/native'
 import {
   View,
   Text,
@@ -9,13 +10,13 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
+} from 'react-native'
 
 export default function SignUp({navigation}) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [nickname, setNickname] = useState('');
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [nickname, setNickname] = useState('')
 
   const SignUpWithEmail = async () => {
     try {
@@ -23,9 +24,9 @@ export default function SignUp({navigation}) {
       const userCredential = await auth().createUserWithEmailAndPassword(
         email,
         password,
-      );
+      )
       // 2. 생성된 유저의 UID 가져오기
-      const uid = userCredential.user.uid;
+      const uid = userCredential.user.uid
 
       // 3. Firestore에 유저 정보 저장 (닉네임 추가)
       await firestore().collection('user').doc(uid).set({
@@ -33,13 +34,13 @@ export default function SignUp({navigation}) {
         nickname: nickname,
         profile_pic: `https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png`,
         // 추가적인 필드도 필요하다면 여기에 추가
-      });
-      console.log('User signed up successfully!');
-      navigation.navigate('Login');
+      })
+      console.log('User signed up successfully!')
+      navigation.navigate('Login')
     } catch (error) {
-      console.error('Error signing up:', error.message);
+      console.error('Error signing up:', error.message)
     }
-  };
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -81,7 +82,7 @@ export default function SignUp({navigation}) {
         </TouchableOpacity>
       </View>
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -130,4 +131,4 @@ const styles = StyleSheet.create({
     width: 380,
     height: 60,
   },
-});
+})

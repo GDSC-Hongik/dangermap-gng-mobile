@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import React, {useState} from 'react'
+import {useNavigation} from '@react-navigation/native'
 
 import {
   View,
@@ -8,7 +8,11 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
+} from 'react-native'
+
+import MyPageEdit from './MyPageEdit'
+import AccountDelete from './AccountDelete'
+import MySafety from './MySafety'
 
 export default function MyPage({navigation}) {
   return (
@@ -35,7 +39,7 @@ export default function MyPage({navigation}) {
       </TouchableOpacity>
       <View style={styles.sectionLine} />
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -56,4 +60,4 @@ const styles = StyleSheet.create({
     marginTop: 18,
     fontWeight: 'bold',
   },
-});
+})
