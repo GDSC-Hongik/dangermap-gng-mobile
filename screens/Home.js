@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
-import {Platform, PermissionsAndroid} from 'react-native'
+import {Platform, PermissionsAndroid, Animated} from 'react-native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'
+import MapView, {PROVIDER_GOOGLE, Marker, Circle} from 'react-native-maps'
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import Geolocation from '@react-native-community/geolocation'
 import {useIsFocused} from '@react-navigation/native'
@@ -86,11 +86,59 @@ function MainScreen() {
   )
 }
 
-function MapScreen({navigation}) {
-  const [location, setLocation] = useState() //useState를 사용하여 location 상태를 관리
+/*          <Marker
+            coordinate={{
+              latitude: 37.556944,
+              longitude: 126.923917,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+          />*/
+
+function MapScreen() {
+  const [location, setLocation] = useState()
+  const [region, setRegion] = useState()
+
+  const handlePlacePress = place => {
+    // 선택된 장소의 위도와 경도 가져오기
+    const {lat, lng} = place.geometry.location
+    // 지도의 중심을 선택된 장소로 이동
+    setRegion({
+      latitude: lat,
+      longitude: lng,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
+    })
+  }
+
+  useEffect(() => {
+    let isMounted = true // 컴포넌트가 마운트된 상태를 나타내는 변수
+
+    async function fetchLocation() {
+      try {
+        const granted = await requestPermission()
+        if (granted) {
+          const currentPosition = await getCurrentLocation()
+          if (isMounted) {
+            setLocation(currentPosition)
+            setRegion(currentPosition)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching location:', error)
+      }
+    }
+
+    fetchLocation()
+
+    return () => {
+      isMounted = false // 컴포넌트가 언마운트되었음을 나타내는 변수를 false로 설정하여 클린업 함수에서 상태 업데이트를 막습니다.
+    }
+  }, [])
 
   async function requestPermission() {
     // 사용자의 위치 정보 수집 권한을 요청
+
     try {
       if (Platform.OS === 'android') {
         const granted = await PermissionsAndroid.request(
@@ -114,10 +162,6 @@ function MapScreen({navigation}) {
     }
   }
 
-  useEffect(() => {
-    requestPermission()
-  }, [])
-
   const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       position => {
@@ -131,87 +175,82 @@ function MapScreen({navigation}) {
       error => {
         console.warn('Error getting current location:', error)
       },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 3600},
     )
   }
-
-  useEffect(() => {
-    let isMounted = true
-
-    //useEffect를 사용하여 컴포넌트가 마운트될 때 위치 권한을 요청하고, 권한이 허가되면 현재 위치를 가져와 location 상태를 업데이트
-    requestPermission().then(result => {
-      if (isMounted) {
-        console.log({result})
-        if (result === 'granted') {
-          Geolocation.getCurrentPosition(
-            pos => {
-              setLocation(pos.coords)
-            },
-            error => {
-              console.log('오류', error)
-            },
-            {
-              enableHighAccuracy: true,
-              timeout: 5000,
-              maximumAge: 3600,
-            },
-          )
-        }
-      }
-    })
-  }, [])
-
-  if (!location) {
-    return (
-      // location이 없으면 "Splash Screen"을 표시
-      <View>
-        <Text>Splash Screen</Text>
-      </View>
-    )
-  }
-
   return (
-    // 그렇지 않으면 MapView를 통해 현재 위치를 보여줌
-    <>
-      <View>
+    <View style={{flex: 1}}>
+      <GooglePlacesAutocomplete
+        placeholder="위치 검색"
+        onPress={(data, details = null) => {
+          // 선택된 장소 정보가 있는 경우 이동 처리
+          handlePlacePress(details)
+        }}
+        query={{key: 'AIzaSyCMkA_ccgrslOQgsfNR2oR9awLZBYnbDNI', language: 'ko'}}
+        fetchDetails={true}
+        returnKeyType={'default'}
+        autoFocus={false}
+        minLength={2}
+        onFail={error => console.log(error)}
+        onNotFound={() => console.log('no results')}
+        listEmptyComponent={<Text>No results found</Text>}
+        styles={{
+          container: {
+            zIndex: 1,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+          },
+          textInputContainer: {
+            backgroundColor: 'transparent', // 검색창 배경 투명으로 설정
+            borderTopWidth: 0, // 검색창 상단 테두리 제거
+            borderBottomWidth: 0, // 검색창 하단 테두리 제거
+          },
+          textInput: {
+            height: 50,
+            borderWidth: 1,
+            borderColor: 'transparent',
+            borderRadius: 5,
+            paddingHorizontal: 10,
+          },
+          listView: {
+            position: 'absolute',
+            top: 50, // 검색창 아래에 표시되도록 설정
+            backgroundColor: 'white',
+            width: '100%',
+            zIndex: 2, // 검색 결과 목록이 검색창 위에 표시되도록 설정
+          },
+        }}
+      />
+      {location ? (
         <MapView
+          style={{flex: 1}}
           provider={PROVIDER_GOOGLE}
+          minZoomLevel={10}
           initialRegion={{
             latitude: location.latitude,
             longitude: location.longitude,
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
-        />
-      </View>
-    </>
-  )
-
-  /*
-  return (
-    <View style={{flex: 1}}>
-      <MapView
-        style={{flex: 1}}
-        provider={PROVIDER_GOOGLE}
-        minZoomLevel={10}
-        initialRegion={{
-          latitude: 37.552635722509,
-          longitude: 126.92436042413,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}>
-        <Marker
-          coordinate={{
-            latitude: 37.556944,
-            longitude: 126.923917,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        />
-      </MapView>
+          region={region}>
+          {region && <Marker coordinate={region} />}
+          <Circle
+            center={{
+              latitude: location.latitude,
+              longitude: location.longitude,
+            }}
+            radius={10} // 반지름 설정 (미터 단위)
+            fillColor="rgba(0, 0, 255, 0.3)" // 파란색으로 투명도 설정
+            strokeColor="rgba(0, 0, 255, 0.3)" // 테두리 색상 설정
+          />
+        </MapView>
+      ) : (
+        <Text>Loading...</Text>
+      )}
     </View>
   )
-  */
 }
 
 function HomeScreen({navigation}) {
@@ -298,10 +337,6 @@ function SettingScreen({navigation}) {
       )}
       <View style={styles.sectionLine} />
       <TouchableOpacity style={styles.section}>
-        <Text style={styles.font}>알림받기</Text>
-      </TouchableOpacity>
-      <View style={styles.sectionLine} />
-      <TouchableOpacity style={styles.section}>
         <Text style={styles.font}>약관 및 정책</Text>
       </TouchableOpacity>
       <View style={styles.sectionLine} />
@@ -323,12 +358,6 @@ function SettingScreen({navigation}) {
     </ScrollView>
   )
 }
-
-// 처음 어플 키면 홈 화면 보이게끔
-// 설정 탭 드가서 내 정보 눌렀을 때
-// 1. 로그인 되어 있으면 내정보수정화면으로
-// 2. 로그인 안 되어 있으면 로그인 화면으로
-// 로그아웃 버튼 누를 시 바로 로그아웃되게
 
 const styles = StyleSheet.create({
   container: {

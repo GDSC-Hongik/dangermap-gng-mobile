@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import storage from '@react-native-firebase/storage';
-import {launchImageLibrary} from 'react-native-image-picker';
+import React, {useEffect, useState} from 'react'
+import {useNavigation} from '@react-navigation/native'
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import storage from '@react-native-firebase/storage'
+import {launchImageLibrary} from 'react-native-image-picker'
 
 import {
   View,
@@ -19,39 +19,39 @@ import {
   Platform,
   ActivityIndicator,
   Button,
-} from 'react-native';
+} from 'react-native'
 
 export default function MyPageEdit({navigation}) {
-  const [myNickname, setMyNickname] = useState('');
-  const [profile, setProfile] = useState();
-  const [response, setResponse] = useState(null);
+  const [myNickname, setMyNickname] = useState('')
+  const [profile, setProfile] = useState()
+  const [response, setResponse] = useState(null)
 
   const info = async () => {
     try {
-      const user = auth().currentUser; // Access the user property directly
+      const user = auth().currentUser // Access the user property directly
 
       // Now you can use the 'user' object as needed
-      const uid = user.uid;
+      const uid = user.uid
 
       // 2. Firestore에서 해당 유저의 정보 가져오기
-      const userDoc = await firestore().collection('user').doc(uid).get();
-      const userData = userDoc.data();
+      const userDoc = await firestore().collection('user').doc(uid).get()
+      const userData = userDoc.data()
 
       // 3. userData를 기반으로 필요한 작업 수행
       if (userData) {
-        const userNickname = userData.nickname;
-        const userProfile = userData.profile_pic;
-        setMyNickname(userNickname);
-        setProfile(userProfile);
+        const userNickname = userData.nickname
+        const userProfile = userData.profile_pic
+        setMyNickname(userNickname)
+        setProfile(userProfile)
       }
     } catch (error) {
-      console.error('Error', 'User information not found.', error.message);
+      console.error('Error', 'User information not found.', error.message)
     }
-  };
+  }
 
   useEffect(() => {
-    info();
-  }, []);
+    info()
+  }, [])
 
   const onSelectImage = () => {
     launchImageLibrary(
@@ -62,39 +62,42 @@ export default function MyPageEdit({navigation}) {
         includeBase64: Platform.OS === 'android',
       },
       res => {
-        if (res.didCancel) return;
-        setResponse(res);
+        if (res.didCancel) return
+        setResponse(res)
       },
-    );
-  };
+    )
+  }
 
   const profileUpload = async () => {
     if (response) {
-      const user = await auth().currentUser;
-      const uid = user.uid;
+      const user = await auth().currentUser
+      const uid = user.uid
       try {
-        const asset = response.assets[0];
-        const reference = storage().ref(`/profile/${asset.fileName}`); // 업로드할 경로 지정
+        const asset = response.assets[0]
+        const reference = storage().ref(`/profile/${asset.fileName}`) // 업로드할 경로 지정
 
         if (Platform.OS === 'android') {
           await reference.putString(asset.base64, 'base64', {
             contentType: asset.type,
-          });
+          })
         }
 
-        const imageUrl = await reference.getDownloadURL();
-        setProfile(imageUrl);
+        const imageUrl = await reference.getDownloadURL()
+        setProfile(imageUrl)
 
         await firestore().collection('user').doc(uid).update({
           nickname: myNickname,
           profile_pic: imageUrl,
-        });
-          console.log('닉네임과 프로필 사진이 성공적으로 업데이트되었습니다.');
+        })
+        console.log('닉네임과 프로필 사진이 성공적으로 업데이트되었습니다.')
       } catch (error) {
-        console.error('Firestore에 닉네임 또는 프로필 사진을 업데이트하는 중 오류 발생:', error);
+        console.error(
+          'Firestore에 닉네임 또는 프로필 사진을 업데이트하는 중 오류 발생:',
+          error,
+        )
+      }
     }
-    }
-  };
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -125,7 +128,7 @@ export default function MyPageEdit({navigation}) {
       </TouchableOpacity>
       <View style={styles.sectionLine} />
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -179,4 +182,4 @@ const styles = StyleSheet.create({
     border: 'none',
     marginBottom: 10,
   },
-});
+})
