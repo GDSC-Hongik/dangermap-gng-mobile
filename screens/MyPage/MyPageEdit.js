@@ -21,6 +21,8 @@ import {
   Button,
 } from 'react-native'
 
+import MyPasswordEdit from './MyPasswordEdit'
+
 export default function MyPageEdit({navigation}) {
   const [myNickname, setMyNickname] = useState('')
   const [profile, setProfile] = useState()

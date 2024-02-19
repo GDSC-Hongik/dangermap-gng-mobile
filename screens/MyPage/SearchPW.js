@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useEffect, useState} from 'react'
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import {useNavigation} from '@react-navigation/native'
 
 import {
   View,
@@ -10,38 +11,38 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
+} from 'react-native'
 
 export default function SearchPW({navigation}) {
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [email, setEmail] = useState('')
+  const [error, setError] = useState('')
+  const [submitted, setSubmitted] = useState(false)
 
   const resetUserPassword = async () => {
     try {
-      const user = auth().currentUser; // Access the user property directly
+      const user = auth().currentUser // Access the user property directly
       // Now you can use the 'user' object as needed
-      const uid = user.uid;
+      const uid = user.uid
       // 2. Firestore에서 해당 유저의 정보 가져오기
-      const userDoc = await firestore().collection('user').doc(uid).get();
-      const userData = userDoc.data();
+      const userDoc = await firestore().collection('user').doc(uid).get()
+      const userData = userDoc.data()
       // 3. userData를 기반으로 필요한 작업 수행
       if (userData) {
-        const userEmail = userData.email;
-        setEmail(userEmail);
+        const userEmail = userData.email
+        setEmail(userEmail)
       }
-      await auth().sendPasswordResetEmail(email);
-      setSubmitted(true);
-      setError('');
-      navigation.navigate('Login');
+      await auth().sendPasswordResetEmail(email)
+      setSubmitted(true)
+      setError('')
+      navigation.navigate('Login')
     } catch (error) {
       if (error.code === 'auth/user-not-found') {
-        setError('User not found');
+        setError('User not found')
       } else {
-        setError('There was a problem with your request');
+        setError('There was a problem with your request')
       }
     }
-  };
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -66,7 +67,7 @@ export default function SearchPW({navigation}) {
         </TouchableOpacity>
       </View>
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -115,4 +116,4 @@ const styles = StyleSheet.create({
     width: 380,
     height: 60,
   },
-});
+})

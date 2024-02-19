@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
+import React, {useState} from 'react'
+import {useNavigation} from '@react-navigation/native'
+import auth from '@react-native-firebase/auth'
+
 import {
   View,
   Text,
@@ -8,21 +9,21 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
+} from 'react-native'
 
 export default function AccountDelete({navigation}) {
   const accountDelete = () => {
     try {
-      let user = auth().currentUser;
+      let user = auth().currentUser
       user
         .delete()
         .then(() => console.log('User deleted'))
-        .catch(error => console.log(error));
+        .catch(error => console.log(error))
     } catch (error) {
-      console.log(error.message);
+      console.log(error.message)
     }
-    navigation.navigate('Home');
-  };
+    navigation.navigate('Home')
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -55,7 +56,7 @@ export default function AccountDelete({navigation}) {
         </TouchableOpacity>
       </View>
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -112,4 +113,4 @@ const styles = StyleSheet.create({
     width: 380,
     height: 60,
   },
-});
+})

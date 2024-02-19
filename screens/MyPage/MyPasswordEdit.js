@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {updatePassword} from 'firebase/auth';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import storage from '@react-native-firebase/storage';
+import React, {useEffect, useState} from 'react'
+import {updatePassword} from 'firebase/auth'
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import storage from '@react-native-firebase/storage'
+import {useNavigation} from '@react-navigation/native'
 import {
   View,
   Text,
@@ -12,25 +13,25 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-} from 'react-native';
+} from 'react-native'
 
 export default function SignUp({navigation}) {
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState('')
 
   const changePassword = async () => {
-    const user = auth().currentUser;
+    const user = auth().currentUser
     try {
       if (newPassword === newPasswordConfirm) {
-        await user.updatePassword(newPassword);
-        navigation.navigate('MyPage');
+        await user.updatePassword(newPassword)
+        navigation.navigate('MyPage')
       }
     } catch (error) {
-      Alert('비밀번호가 다릅니다.');
-      console.log('에러: ', error.message);
+      Alert('비밀번호가 다릅니다.')
+      console.log('에러: ', error.message)
     }
-  };
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -60,7 +61,7 @@ export default function SignUp({navigation}) {
         </TouchableOpacity>
       </View>
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -109,4 +110,4 @@ const styles = StyleSheet.create({
     width: 380,
     height: 60,
   },
-});
+})
