@@ -35,7 +35,6 @@ const saveToken = async token => {
 export default function Login({navigation}) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [logged, setLogged] = useState(false)
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -44,32 +43,32 @@ export default function Login({navigation}) {
   }, [])
 
   const signIn = async () => {
-    try {
-      // 1. Firebase Authentication을 사용하여 로그인
-      await auth().signInWithEmailAndPassword(email, password)
+    // 1. Firebase Authentication을 사용하여 로그인
+    await auth().signInWithEmailAndPassword(email, password)
 
-      const userToken = await auth().currentUser.getIdToken()
-
-      if (userToken) {
-        await saveToken(userToken)
-        setLogged(true)
-        Alert.alert('로그인 성공', '성공적으로 로그인되었습니다.')
-        navigation.navigate('Home')
-      }
-    } catch (error) {
-      Alert.alert('로그인 오류', '아이디 또는 비밀번호를 확인해주세요.')
-    }
+    Alert.alert('로그인 성공', '성공적으로 로그인되었습니다.')
+    navigation.navigate('Home')
   }
 
+  let isSignInInProgress = false
+
   const onPressGoogleBtn = async () => {
-    await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true})
-    const {idToken} = await GoogleSignin.signIn()
-    console.log('idToekn : ', idToken)
-    if (idToken) {
-      setIdToken(idToken)
+    try {
+      // 구글 로그인 시도
+      await GoogleSignin.hasPlayServices()
+      const userInfo = await GoogleSignin.signIn()
+
+      // Firebase에 구글 계정으로 인증을 시도하여 로그인
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        userInfo.idToken,
+      )
+      await auth().signInWithCredential(googleCredential)
+
+      Alert.alert('로그인 성공', '성공적으로 로그인되었습니다.')
+      navigation.navigate('Home')
+    } catch (error) {
+      console.error('구글 로그인 오류:', error.message)
     }
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken)
-    const res = await auth().signInWithCredential(googleCredential)
   }
 
   return (

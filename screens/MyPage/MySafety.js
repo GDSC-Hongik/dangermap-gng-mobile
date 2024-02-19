@@ -45,8 +45,14 @@ const DangerListScreen = () => {
 
   const getData = async () => {
     try {
-      const element = await getDangerUserData(email)
-      setDangerData(element)
+      const data = await getDangerUserData(email)
+      if (data && data.length > 0) {
+        // 데이터가 있을 경우
+        setDangerData(data)
+      } else {
+        // 데이터가 없을 경우
+        setDangerData([]) // 빈 배열로 설정
+      }
     } catch (error) {
       console.log(error)
     }
@@ -82,7 +88,7 @@ const DangerListScreen = () => {
           <View>
             <Text style={styles.type}>{item.danger_type}</Text>
           </View>
-          <Text style={styles.date}>{item.date}</Text>
+          <Text style={styles.date}>{item.display_date}</Text>
           <Text style={styles.content} numberOfLines={1}>
             {item.content}
           </Text>
@@ -94,7 +100,6 @@ const DangerListScreen = () => {
             }}>
             <Text style={styles.rate}>위험수치 {item.danger_rate}</Text>
             <Text style={styles.like}>좋아요 {item.like}</Text>
-            <Text style={styles.dislike}>싫어요 {item.dislike}</Text>
           </View>
         </View>
       </View>
@@ -130,7 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   image: {
-    width: '35%',
+    width: '40%',
     backgroundColor: 'black',
   },
   information: {
@@ -155,9 +160,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   like: {
-    marginRight: 5,
-  },
-  dislike: {
     marginRight: 5,
   },
 })

@@ -22,6 +22,7 @@ import LogoutScreen from '../MyPage/Logout'
 
 export default function SettingScreen({navigation}) {
   const [logged, setLogged] = useState(false)
+  const [email, setEmail] = useState('')
   const [userToken, setUserToken] = useState('')
 
   const isFocused = useIsFocused()
@@ -32,9 +33,12 @@ export default function SettingScreen({navigation}) {
 
       if (user) {
         const token = await user.getIdToken()
+
         if (token) {
           setUserToken(token)
           setLogged(true)
+        } else {
+          setLogged(false)
         }
       }
     } catch (error) {

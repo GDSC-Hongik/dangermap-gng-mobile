@@ -66,7 +66,6 @@ const DangerListScreen = () => {
             }}>
             <Text style={styles.rate}>위험수치 {item.danger_rate}</Text>
             <Text style={styles.like}>좋아요 {item.like}</Text>
-            <Text style={styles.dislike}>싫어요 {item.dislike}</Text>
           </View>
         </View>
       </View>
@@ -127,9 +126,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   like: {
-    marginRight: 5,
-  },
-  dislike: {
     marginRight: 5,
   },
 })

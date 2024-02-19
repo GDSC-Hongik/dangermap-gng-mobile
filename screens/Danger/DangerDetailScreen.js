@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
+  ViewBase,
 } from 'react-native'
 import LikeDislikeButtons from './LikeDislikeButtons'
 
@@ -45,46 +46,73 @@ const DangerDetailScreen = ({route}) => {
   }, [])
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}>
       <Text style={styles.dangerType}>{item.danger_type}</Text>
-      <Text style={styles.date}>{item.date}</Text>
-      {item.content_pics.length > 0 && (
-        <Image
-          style={styles.image}
-          source={{uri: item.content_pics[0]}} // 첫 번째 URL만 사용
-        />
-      )}
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <LikeDislikeButtons date={item.date} email={userEmail} />
+      <View style={{flexDirection: 'row', paddingBottom: 10}}>
+        <Text style={styles.date}>{item.display_date}</Text>
+        <Text style={styles.rate}>위험수치 {item.danger_rate}</Text>
       </View>
-      <Text style={styles.rate}>위험수치 {item.danger_rate}</Text>
-      <Text>{item.content}</Text>
+
+      {item.content_pics.map((pic, index) => (
+        <Image
+          key={index}
+          style={styles.image}
+          source={{uri: pic}} // 각 URL에 대해 이미지 컴포넌트 생성
+        />
+      ))}
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <LikeDislikeButtons
+          date={item.date}
+          email={userEmail}
+          likes={item.like}
+        />
+      </View>
+      <View style={{flex: 1}}>
+        <Text style={styles.content}>{item.content}</Text>
+      </View>
     </ScrollView>
   )
 }
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 20,
+  },
+  contentContainer: {
+    paddingBottom: 100, // ScrollView 내용의 하단 여백 설정
   },
   dangerType: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
+    paddingLeft: 10,
+    color: '#000000',
   },
   date: {
     fontSize: 16,
     color: 'gray',
     marginBottom: 8,
+    paddingLeft: 10,
   },
   image: {
     width: '100%',
-    height: 200,
-    resizeMode: 'cover',
-    marginBottom: 8,
+    height: 250,
+    resizeMode: 'contain',
+    marginBottom: 20,
+  },
+  rate: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#FA5858',
+    paddingLeft: 20,
   },
   content: {
     fontSize: 18,
-    backgroundColor: 'gray',
+    paddingTop: 10,
+    paddingLeft: 10,
+    color: '#000000',
+    flexShrink: 1,
   },
 })
 

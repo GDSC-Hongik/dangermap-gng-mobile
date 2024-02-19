@@ -1,6 +1,9 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {useNavigation} from '@react-navigation/native'
 import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import storage from '@react-native-firebase/storage'
 
 import {
   View,
@@ -9,16 +12,53 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native'
 
 export default function AccountDelete({navigation}) {
+  const [email, setEmail] = useState()
+
+  const info = async () => {
+    const user = auth().currentUser
+
+    if (user) {
+      setEmail(user.email)
+    }
+  }
+
+  useEffect(() => {
+    info()
+  }, [])
+
+  const deleteInfo = async () => {
+    try {
+      const data = {
+        email: email,
+      }
+
+      const response = await fetch(`http://127.0.0.1:8000/users/${email}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+    } catch (error) {
+      console.error('Error posting email:', error.message)
+      throw error
+    }
+  }
+
   const accountDelete = () => {
     try {
+      deleteInfo(email)
       let user = auth().currentUser
       user
         .delete()
         .then(() => console.log('User deleted'))
         .catch(error => console.log(error))
+
+      Alert.alert('탈퇴가 완료되었습니다.')
     } catch (error) {
       console.log(error.message)
     }

@@ -4,6 +4,11 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import Geolocation from '@react-native-community/geolocation'
 import {useNavigation} from '@react-navigation/native'
 
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import storage from '@react-native-firebase/storage'
+
 import {
   Platform,
   PermissionsAndroid,
@@ -74,7 +79,7 @@ export default function MapScreen() {
         )
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           getCurrentLocation()
-          getCurrentLocation2()
+          // getCurrentLocation2()
         } else {
           console.log('위치 정보 사용 권한이 거부되었습니다.')
         }
@@ -118,9 +123,10 @@ export default function MapScreen() {
     )
   }
 
-  const locationInfo = () => {
+  const regionInfo = () => {
     return {region}
   }
+
   return (
     <View style={{flex: 1}}>
       <GooglePlacesAutocomplete
@@ -166,6 +172,7 @@ export default function MapScreen() {
           },
         }}
       />
+
       {location ? (
         <MapView
           style={{flex: 1}}
@@ -178,7 +185,8 @@ export default function MapScreen() {
             longitudeDelta: 0.005,
           }}
           region={region}>
-          {region && <Marker coordinate={region} onPress={locationInfo} />}
+          {region && <Marker coordinate={region} onPress={regionInfo} />}
+
           <Circle
             center={{
               latitude: location.latitude,
